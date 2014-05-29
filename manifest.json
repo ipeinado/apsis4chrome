@@ -26,6 +26,7 @@
     "offline_enabled": true,
 
     "permissions": [
+        "storage",
         "http://193.27.9.220/Apsis4allBackend/rest/ProfileService"
     ]
 }

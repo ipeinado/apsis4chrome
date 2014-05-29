@@ -7,7 +7,7 @@ h1 {
   font-size: 1.6em;
 }
 
-.formStatus {
+.form-status {
 	padding-bottom: .5em;
 	display: none;
 	color: red;

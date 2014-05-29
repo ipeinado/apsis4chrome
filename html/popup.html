@@ -9,9 +9,9 @@
   </head>
   <body>
   	<h1>Welcome to APSIS4all</h1>
-  	<div id="formDiv">
-  	  <div class="formStatus">Error</div>
-	  <form role="form" id="keyInForm" validate>
+  	<div id="form-div">
+  	  <div class="form-status">Error</div>
+	  <form role="form" id="key-in-form" validate>
 	    <div class="form-group username-form-group">
 	  	  <label for="username" class="sr-only">Username</label>
 	  	  <input type="text" id="username" placeholder="Insert your username" class="form-control" autofocus required />
@@ -24,6 +24,116 @@
 	  	  <input type="submit" value="Log in" />
 	  	</div>
 	  </form>
+	  <p>Don't you have an account?</p>
+	  <a href class="btn btn-primary" id="npg-link">Create an account</a>
+	</div> <! -- formDiv -->
+	
+	<div id="preferences-div">
+		<form role="form" id="preferences-form">
+			<div class="form-group">
+				<h2>Magnification</h2>
+				<div class="checkbox">
+					<label for="magnifier-enabled" id="magnifier-enabled-label">
+						<input type="checkbox" value="" aria-labelled-by="magnifier-enabled-label" />
+							Enable magnification
+					</label>
+				</div>
+				
+				<h3>Magnification level</h3>
+				<div class="radio">
+					<label for="magnification-level-1">
+						<input type="radio" name="magnification-level" id="magnification-level-1" value="1" disabled />
+						100%
+					</label>
+				</div>
+				<div class="radio">
+					<label for="magnification-level-2">
+						<input type="radio" name="magnification-level" id="magnification-level-2" value="2" />
+						200%
+					</label>
+				</div>
+				<div class="radio">
+					<label for="magnification-level-3">
+						<input type="radio" name="magnification-level" id="magnification-level-3" value="3" disabled />
+						300%
+					</label>
+				</div>
+			</div>
+			<h2>Screen reader</h2>
+			<div class="form-group">
+				<div class="checkbox">
+					<label for="screenreader-enabled" id="screenreader-enabled-label">
+						<input type="checkbox" id="screenreader-enabled" value="" aria-labelled-by="screenreader-enabled-label" />
+						Enable screen reader
+					</label>
+				</div>
+			</div>
+
+			<h2>Colours</h2>
+			<div class="form-group">
+				<label for="background-colour" id="background-colour-label">Background colour</label>
+				<input type="color" id="background-colour" aria-labelled-by="background-colour-label" value="#FFFFFF" />
+			</div>
+
+			<div class="form-group">
+				<label for="foreground-colour" id="foreground-colour-label">Foreground colour</label>
+				<input type="color" id="foreground-colour" aria-labelled-by="foreground-colour-label" value="#000000" />
+			</div>
+
+			<div class="checkbox">
+				<label for="monochrome-theme-enabled" id="monochrome-theme-enabled-label">
+					<input type="checkbox" id="monochrome-theme-enabled" aria-labelled-by="monochrome-theme-enabled-label" value="" />
+					Remove all colours
+				</label>
+			</div>
+
+			<div class="form-group">
+				<h2>Font size</h2>
+				<div class="radio">
+					<label for="font-size-normal">
+						<input type="radio" name="font-size" id="font-size-normal" value="normal" />
+						Normal
+					</label>
+				</div>
+
+				<div class="radio">
+					<label for="font-size-large">
+						<input type="radio" name="font-size" id="font-size-large" value="large" />
+						Large
+					</label>
+				</div>
+
+				<div class="radio">
+					<label for="font-size-x-large">
+						<input type="radio" name="font-size" id="font-size-x-large" value="x-large" />
+						X-Large
+					</label>
+				</div>
+
+			<div>
+
+			<div class="form-group">
+				<h2>On Screen Keyboard</h2>
+				<div class="checkbox">
+					<label for="on-screen-keyboard-enabled">
+						<input type="checkbox" id="on-screen-keyboard-enabled" value="" />
+						Enable on-screen keyboard
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<h2>Simplifier</h2>
+				<div class="checkbox">
+					<label for="simplifier-enabled">
+						<input type="checkbox" id="simplifier-enabled" value="" />
+						Enable simplification
+					</label>
+				</div>
+			</div>
+
+		</form>
+		<button class="btn btn-danger" id="log-out-btn">Log out</button>
 	</div>
   </body>
 </html>
