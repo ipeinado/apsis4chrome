@@ -5,11 +5,12 @@
   	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
   	<link rel="stylesheet" href="../styles/popup.css"  />
   	<script src="../lib/jquery-2.1.1.min.js"></script>
-  	<script src="../js/popup.js"></script>
+  	<script src="../popup.js"></script>
   </head>
   <body>
-  	<h1>Welcome to APSIS4all</h1>
-  	<div id="form-div">
+  	  <div id="form-div">
+  	  <h1>APSIS4all</h1>
+  	  <p class="text-muted">Insert your user name and password from APSIS4all to adapt any web pages to your needs and preferences</p>
   	  <div class="form-status">Error</div>
 	  <form role="form" id="key-in-form" validate>
 	    <div class="form-group username-form-group">
@@ -19,9 +20,7 @@
 	  	<div class="form-group password-form-group">
 	  	  <label for="password" class="sr-only">Password</label>
 	  	  <input type="password" id="password" placeholder="Insert your password" class="form-control" required />
-	  	</div>
-	  	<div class="form-group">
-	  	  <input type="submit" value="Log in" />
+	  	  <input type="submit" id="key-in-submit" class="btn btn-success" value="Log in" />
 	  	</div>
 	  </form>
 	  <p>Don't you have an account?</p>
@@ -29,60 +28,45 @@
 	</div> <! -- formDiv -->
 	
 	<div id="preferences-div">
+		<h1 id="preferences-div-welcome"></h1>
 		<form role="form" id="preferences-form">
+			<h2>Magnification</h2>
+			<div class="checkbox">
+				<label for="magnifier-enabled" id="magnifier-enabled-label">
+				<input type="checkbox" value="" id="magnifier-enabled" aria-labelled-by="magnifier-enabled-label" />
+					Enable magnification
+				</label>
+			</div>	
+			
 			<div class="form-group">
-				<h2>Magnification</h2>
-				<div class="checkbox">
-					<label for="magnifier-enabled" id="magnifier-enabled-label">
-						<input type="checkbox" value="" aria-labelled-by="magnifier-enabled-label" />
-							Enable magnification
-					</label>
-				</div>
-				
-				<h3>Magnification level</h3>
-				<div class="radio">
-					<label for="magnification-level-1">
-						<input type="radio" name="magnification-level" id="magnification-level-1" value="1" disabled />
-						100%
-					</label>
-				</div>
-				<div class="radio">
-					<label for="magnification-level-2">
-						<input type="radio" name="magnification-level" id="magnification-level-2" value="2" />
-						200%
-					</label>
-				</div>
-				<div class="radio">
-					<label for="magnification-level-3">
-						<input type="radio" name="magnification-level" id="magnification-level-3" value="3" disabled />
-						300%
-					</label>
-				</div>
+				<label for="magnification-level" id="magnification-level-label">
+					<input type="number" id="magnification-level" aria-labelled-by="magnification-level-label" min="1" max="3.5" step="0.5" value="1" />
+					Magnification level
+				</label>
 			</div>
+			
 			<h2>Screen reader</h2>
-			<div class="form-group">
-				<div class="checkbox">
-					<label for="screenreader-enabled" id="screenreader-enabled-label">
-						<input type="checkbox" id="screenreader-enabled" value="" aria-labelled-by="screenreader-enabled-label" />
-						Enable screen reader
-					</label>
-				</div>
+			<div class="checkbox">
+				<label for="screenreader-enabled" id="screenreader-enabled-label">
+					<input type="checkbox" id="screenreader-enabled" value="" aria-labelled-by="screenreader-enabled-label" />
+					Enable screen reader
+				</label>
 			</div>
-
+		
 			<h2>Colours</h2>
 			<div class="form-group">
 				<label for="background-colour" id="background-colour-label">Background colour</label>
-				<input type="color" id="background-colour" aria-labelled-by="background-colour-label" value="#FFFFFF" />
+				<input type="color" id="background-colour" aria-labelled-by="background-colour-label" value=null />
 			</div>
 
 			<div class="form-group">
 				<label for="foreground-colour" id="foreground-colour-label">Foreground colour</label>
-				<input type="color" id="foreground-colour" aria-labelled-by="foreground-colour-label" value="#000000" />
+				<input type="color" id="foreground-colour" aria-labelled-by="foreground-colour-label" value=null />
 			</div>
 
 			<div class="checkbox">
 				<label for="monochrome-theme-enabled" id="monochrome-theme-enabled-label">
-					<input type="checkbox" id="monochrome-theme-enabled" aria-labelled-by="monochrome-theme-enabled-label" value="" />
+					<input type="checkbox" id="monochrome-theme-enabled" aria-labelled-by="monochrome-theme-enabled-label" value=""/>
 					Remove all colours
 				</label>
 			</div>

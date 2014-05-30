@@ -12,7 +12,7 @@
         "scripts": [
             "lib/jquery-2.1.1.min.js",
             "lib/jquery.xml2json.js",
-            "js/background.js"
+            "background.js"
         ],
         "persistent": false
     },

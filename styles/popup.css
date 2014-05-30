@@ -3,12 +3,34 @@ body {
   padding: 1em;
 }
 
-h1 {
-  font-size: 1.6em;
-}
-
 .form-status {
 	padding-bottom: .5em;
 	display: none;
 	color: red;
+}
+
+#key-in-form input[type="text"] {
+	width: 96%;
+}
+
+#key-in-form input[type="password"] {
+	display: inline-block;
+	width: 288px;
+}
+
+#key-in-form #key-in-submit {
+	display: inline-block;
+	width: 65px;
+}
+
+/* PREFERENCES FORM IN POPUP.JS*/
+
+#preferences-form label {
+	font-weight: normal;
+}
+
+#preferences-form h2 {
+	font-weight: bold;
+	font-size: 1.2em;
+	margin-top: 1em;
 }
