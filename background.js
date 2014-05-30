@@ -14,6 +14,10 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+	console.log(changes);
+});
+
 // Handle XMLHttpRequest
 function makeRequest(data) {
 

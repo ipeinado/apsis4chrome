@@ -17,12 +17,15 @@ $(document).ready(function() {
 	// Form buttons
 	$("#magnifier-enabled").click(onMagnifierEnabledClick);
 	$("#magnification-level").on("change", onMagnificationChange);
+	$("#screenreader-enabled").click(onScreenreaderEnabledClick);
 	$("#background-colour").change(onBackgroundColourChange);
 	$("#foreground-colour").change(onForegroundColourChange);
-	$("#screenreader-enabled").click(onScreenreaderEnabledClick);
+	$("#monochrome-theme-enabled").click(onMonochromeEnabledClick);
 	$("#font-size-normal").click(onFontSizeNormalClick);
 	$("#font-size-large").click(onFontSizeLargeClick);
 	$("#font-size-x-large").click(onFontSizeXLargeClick);
+	$("#screen-keyboard-enabled").click(onScreenKeyboardEnabledClick);
+	$("#simplifier-enabled").click(onSimplifierEnabledClick);
 
 	$("#log-out-btn").click(function(e) {
 		e.preventDefault();
@@ -119,6 +122,18 @@ function initializePopup(userInfo) {
 			$("#background-colour-label, #foreground-colour-label").css("color", "#" + localPreferences["foregroundColour"]);
 		}
 
+		if (localPreferences.hasOwnProperty("theme")) {
+			var theme = localPreferences["theme"];
+			if (theme === "monochrome") {
+				$("#monochrome-theme-enabled").prop("checked", true);
+				$("#background-colour, #foreground-colour").prop("disabled", true);
+			} else {
+				$("#monochrome-theme-enabled").prop("checked", false);
+				$("#background-colour, #foreground-colour").prop("disabled", false);
+
+			}
+		}
+
 		if (localPreferences.hasOwnProperty("fontSize")) {
 			var fs = localPreferences["fontSize"];
 			if (fs === "normal") {
@@ -127,6 +142,22 @@ function initializePopup(userInfo) {
 				$("#font-size-large").prop("checked", true);
 			} else if (fs === "x-large") {
 				$("#font-size-x-large").prop("checked", true);
+			}
+		}
+
+		if (localPreferences.hasOwnProperty("onScreenKeyboardEnabled")) {
+			if (localPreferences["onScreenKeyboardEnabled"]) {
+				$("#screen-keyboard-enabled").prop("checked", true);
+			} else {
+				$("#screen-keyboard-enabled").prop("checked", false);
+			}
+		}
+
+		if (localPreferences.hasOwnProperty["simplifier"]) {
+			if (localPreferences["simplifier"]) {
+				$("#simplifier-enabled").prop("checked", true);
+			} else {
+				$("#simplifier-enabled").prop("checked", false);
 			}
 		}
 	}
@@ -171,6 +202,18 @@ function onForegroundColourChange() {
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
+function onMonochromeEnabledClick(e) {
+	if (this.checked) {
+		localPreferences["theme"] = "monochrome";
+		$("#background-colour, #foreground-colour").prop("disabled", true);
+
+	} else {
+		localPreferences["theme"] = "";
+		$("#background-colour, #foreground-colour").prop("disabled", false);
+	}
+	chrome.storage.local.set({preferences: localPreferences});
+}
+
 function onFontSizeNormalClick(e) {
 	localPreferences["fontSize"] = "normal";
 	chrome.storage.local.set({preferences: localPreferences});
@@ -184,4 +227,21 @@ function onFontSizeLargeClick(e) {
 function onFontSizeXLargeClick(e) {
 	localPreferences["fontSize"] = "x-large";
 	chrome.storage.local.set({preferences: localPreferences});
+}
+
+function onScreenKeyboardEnabledClick(e) {
+	if (this.checked) {
+		localPreferences["onScreenKeyboardEnabled"] = true;
+	} else {
+		localPreferences["onScreenKeyboardEnabled"] = true;
+	}
+	chrome.storage.local.set({ preferences : localPreferences });
+}
+
+function onSimplifierEnabledClick(e) {
+	if (this.checked) {
+		localPreferences["simplifier"] = true;
+	} else {
+		localPreferences["simplifier"] = false;
+	}
 }
