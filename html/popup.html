@@ -5,21 +5,23 @@
   	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
   	<link rel="stylesheet" href="../styles/popup.css"  />
   	<script src="../lib/jquery-2.1.1.min.js"></script>
+  	<script src="../lib/angular.min.js"></script>
   	<script src="../popup.js"></script>
   </head>
   <body>
   	  <div id="form-div">
   	  <h1>APSIS4all</h1>
-  	  <p class="text-muted">Insert your user name and password from APSIS4all to adapt any web pages to your needs and preferences</p>
+  	  <p class="text-muted" id="help-text">Insert your user name and password from APSIS4all to adapt any web pages to your needs and preferences</p>
+  	  <p id="connection-status"></p>
   	  <div class="form-status">Error</div>
 	  <form role="form" id="key-in-form" validate>
 	    <div class="form-group username-form-group">
 	  	  <label for="username" class="sr-only">Username</label>
-	  	  <input type="text" id="username" placeholder="Insert your username" class="form-control" autofocus required />
+	  	  <input type="text" id="username" placeholder="Insert your username" class="form-control" autofocus />
 	  	</div>
 	  	<div class="form-group password-form-group">
 	  	  <label for="password" class="sr-only">Password</label>
-	  	  <input type="password" id="password" placeholder="Insert your password" class="form-control" required />
+	  	  <input type="password" id="password" placeholder="Insert your password" class="form-control" />
 	  	  <input type="submit" id="key-in-submit" class="btn btn-success" value="Log in" />
 	  	</div>
 	  </form>
