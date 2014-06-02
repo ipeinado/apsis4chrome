@@ -19,6 +19,7 @@ $(document).ready(function() {
 	$("#magnifier-enabled").click(onMagnifierEnabledClick);
 	$("#magnification-level").on("change", onMagnificationChange);
 	$("#screenreader-enabled").click(onScreenreaderEnabledClick);
+	$("#default-colours").click(onDefaultColoursClick);
 	$("#background-colour").change(onBackgroundColourChange);
 	$("#foreground-colour").change(onForegroundColourChange);
 	$("#monochrome-theme-enabled").click(onMonochromeEnabledClick);
@@ -32,6 +33,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		chrome.storage.local.clear();
 		localPreferences = {};
+		chrome.tabs.reload();
 	});
 }); 
 
@@ -114,6 +116,14 @@ function initializePopup(userInfo) {
 
 		if (localPreferences.hasOwnProperty("magnification")) {
 			$("#magnification-level").attr("value", localPreferences["magnification"]);
+		}
+
+		if (localPreferences.hasOwnProperty("screenColour")) {
+			$("#default-colours").prop("checked", true);
+			$("#background-colour-label, #foreground-colour-label").prop("disabled", true);
+
+		} else {
+			$("#default-colours").prop("checked", false);
 		}
 
 		if (localPreferences.hasOwnProperty("screenReaderEnabled")) {
@@ -200,6 +210,16 @@ function onScreenreaderEnabledClick(e) {
 		localPreferences['screenReaderEnabled'] = false;
 	}
 	chrome.storage.local.set({preferences: localPreferences});
+}
+
+function onDefaultColoursClick(e) {
+	if (this.checked) {
+		localPreferences["screenColour"] = "default";
+		chrome.tabs.reload();
+	} else {
+		delete localPreferences["screenColour"];
+	}
+	chrome.storage.local.set({ preferences : localPreferences }); 
 }
 
 function onBackgroundColourChange() {

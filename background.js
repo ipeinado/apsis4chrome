@@ -118,12 +118,22 @@ function savePreferences(userInfo) {
 		preferences.speechRate = (parseInt(bcdToInt[sr.slice(0, 4)]))*100 + (parseInt(bcdToInt[sr.slice(4, 8)]))*10;
 	}
 
-	if (prefs.hasOwnProperty("ColourOfBackground")) {
-		preferences.backgroundColour = prefs["ColourOfBackground"]["Value"];
-	}
+	if (prefs.hasOwnProperty("ColourOfBackground") && prefs.hasOwnProperty("ColourOfText")) {
+		var bgColour = prefs["ColourOfBackground"]["Value"];
+		var fgColour = prefs["ColourOfText"]["Value"];
 
-	if (prefs.hasOwnProperty("ColourOfText")) {
-		preferences.foregroundColour = prefs["ColourOfText"]["Value"];
+		console.log("BACKGROUND COLOR: " + bgColour); 
+		console.log("FOREGROUND COLOR: " + fgColour);
+		
+		preferences.backgroundColour = bgColour;
+		preferences.foregroundColour = fgColour;
+
+		if ((bgColour == "FFD700") && (fgColour == "1E90FF")) {
+			preferences["screenColour"] = "default";
+		}
+
+	} else {
+		preferences["screenColour"] = "default";		
 	}
 
 	if (prefs.hasOwnProperty("ColourAvoidance")) {
@@ -160,7 +170,6 @@ function savePreferences(userInfo) {
 		} 
 	}
 
-	console.log(preferences);
 	chrome.storage.local.set({ user: userInfo.username, preferences: preferences }, function() {
 		if (chrome.runtime.lastError) {
 			console.log("Error storing");
@@ -171,36 +180,37 @@ function savePreferences(userInfo) {
 function setPreferences(preferences) {
 	console.log(preferences);
 
+	if (preferences != undefined) {
+		if (preferences.hasOwnProperty("magnifierEnabled")) {
+			if (preferences["magnifierEnabled"]) {
+				if (preferences.hasOwnProperty("magnification")) {
+					chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('zoom', '" + preferences['magnification'].toString() + "')" });
+				}
+			} else {
+				chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');" });
+			}
+		}
 
+		if (!preferences.hasOwnProperty("screenColour")) {
 
-	if (preferences.hasOwnProperty("magnifierEnabled")) {
-		if (preferences["magnifierEnabled"]) {
-			if (preferences.hasOwnProperty("magnification")) {
-				chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('zoom', '" + preferences['magnification'].toString() + "')" });
+			if (preferences.hasOwnProperty("backgroundColour")) {
+				var backgroundColour = preferences["backgroundColour"];
+				chrome.tabs.insertCSS({ code: "* { background: #" + backgroundColour + " !important; }" }); 
+			} 
+
+			if (preferences.hasOwnProperty("foregroundColour")) {
+				var foregroundColour = preferences["foregroundColour"];
+				chrome.tabs.insertCSS({ code : "* { color: #"+ foregroundColour + " !important; a { text-decoration: underline; } }" });
+			}
+		} 
+
+		if (preferences.hasOwnProperty("theme")) {
+			if (preferences["theme"] === "monochrome") {
+				chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('theme', 'monochrome');" });
 			}
 		} else {
-			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');" });
+			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('theme');" });
 		}
-	}
-
-	if (preferences.hasOwnProperty("backgroundColour")) {
-		var backgroundColour = preferences["backgroundColour"];
-		chrome.tabs.insertCSS({ code: "* { background: #" + backgroundColour + " !important; }" }); 
-	} else {
-		chrome.tabs.insertCSS({ code: "* { background: #FFF; }" }); 
-	}
-
-	if (preferences.hasOwnProperty("foregroundColour")) {
-		var foregroundColour = preferences["foregroundColour"];
-		chrome.tabs.insertCSS({ code : "* { color: #"+ foregroundColour + " !important; a { text-decoration: underline; } }" });
-	}
-
-	if (preferences.hasOwnProperty("theme")) {
-		if (preferences["theme"] === "monochrome") {
-			chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('theme', 'monochrome');" });
-		}
-	} else {
-		chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('theme');" });
 	}
 }
 

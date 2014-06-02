@@ -19,6 +19,6 @@ html[zoom = "3.5"] {
 }
 
 html[theme = "monochrome"] {
-	-webkit-filter: grayscale(100%);
+	-webkit-filter: grayscale(100%) contrast(140%);
 	filter: grayscale(100%);
 }
