@@ -1,0 +1,24 @@
+html[zoom = "1.5"] {
+	zoom: 150%;
+}
+
+html[zoom = "2"] {
+	zoom: 200%;
+}
+
+html[zoom = "2.5"] {
+	zoom: 250%;
+}
+
+html[zoom = "3"] {
+	zoom: 300%;
+}
+
+html[zoom = "3.5"] {
+	zoom: 350%;
+}
+
+html[theme = "monochrome"] {
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+}

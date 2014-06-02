@@ -16,8 +16,23 @@ chrome.runtime.onMessage.addListener(
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	var newPreferences = changes.preferences.newValue;
-	setPreferences(newPreferences);
+
+	if (newPreferences != undefined) {
+		setPreferences(newPreferences);
+	} else {
+		chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');document.documentElement.removeAttribute('theme');" });
+	}
 });
+
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+	chrome.storage.local.get("preferences", function(results) {
+		if (results.preferences != undefined) {
+			setPreferences(results.preferences);	
+		} else {
+			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');document.documentElement.removeAttribute('theme');" });		
+		}
+	});
+}); 
 
 // Handle XMLHttpRequest
 function makeRequest(data) {
@@ -155,6 +170,38 @@ function savePreferences(userInfo) {
 
 function setPreferences(preferences) {
 	console.log(preferences);
+
+
+
+	if (preferences.hasOwnProperty("magnifierEnabled")) {
+		if (preferences["magnifierEnabled"]) {
+			if (preferences.hasOwnProperty("magnification")) {
+				chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('zoom', '" + preferences['magnification'].toString() + "')" });
+			}
+		} else {
+			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');" });
+		}
+	}
+
+	if (preferences.hasOwnProperty("backgroundColour")) {
+		var backgroundColour = preferences["backgroundColour"];
+		chrome.tabs.insertCSS({ code: "* { background: #" + backgroundColour + " !important; }" }); 
+	} else {
+		chrome.tabs.insertCSS({ code: "* { background: #FFF; }" }); 
+	}
+
+	if (preferences.hasOwnProperty("foregroundColour")) {
+		var foregroundColour = preferences["foregroundColour"];
+		chrome.tabs.insertCSS({ code : "* { color: #"+ foregroundColour + " !important; a { text-decoration: underline; } }" });
+	}
+
+	if (preferences.hasOwnProperty("theme")) {
+		if (preferences["theme"] === "monochrome") {
+			chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('theme', 'monochrome');" });
+		}
+	} else {
+		chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('theme');" });
+	}
 }
 
 // General Use Variables

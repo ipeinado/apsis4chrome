@@ -23,10 +23,38 @@
         },
         "default_popup": "html/popup.html"
     },
+
+    "content_scripts": [
+        {
+            "matches" : [
+                "http://*/*", 
+                "https://*/*",
+                "<all_urls>"
+            ],
+            "css": [
+                "styles/styles.css"
+            ],
+            "js": [
+                "lib/jquery-2.1.1.min.js"
+            ],
+            "run_at": "document_start"
+
+        }
+        
+    ],
+
     "offline_enabled": true,
 
+    "web_accessible_resources": [
+        "lib/jquery-2.1.1.min.js"
+    ],
+
     "permissions": [
+        "tabs",
         "storage",
+        "http://*/*",
+        "https://*/*",
+        "<all_urls>",
         "http://193.27.9.220/Apsis4allBackend/rest/ProfileService"
     ]
 }

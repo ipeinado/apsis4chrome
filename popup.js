@@ -222,7 +222,7 @@ function onMonochromeEnabledClick(e) {
 		$("#background-colour, #foreground-colour").prop("disabled", true);
 
 	} else {
-		localPreferences["theme"] = "";
+		delete localPreferences.theme;
 		$("#background-colour, #foreground-colour").prop("disabled", false);
 	}
 	chrome.storage.local.set({preferences: localPreferences});
