@@ -65,8 +65,6 @@ function onKeyInFormSubmit(e) {
 	e.preventDefault();
 	var pwd = $("#password").val();
 	var uname = $("#username").val();
-
-	console.log("here then");
 		
 	if ((pwd === "") || (uname === "")) {
 		console.log("Fields are empty");
