@@ -9,6 +9,7 @@ $(document).ready(function() {
 	// keyInFormSubmit
 	$("#key-in-form").submit(onKeyInFormSubmit);
 
+	// Go to initial servlet
 	$("#npg-link").click(function(e) {
 		e.preventDefault();
 		chrome.tabs.create({ url: 'https://cajerofacil.apsis4all.eu/initialservlet' }); 
@@ -71,6 +72,9 @@ function onKeyInFormSubmit(e) {
 	}
 
 	chrome.runtime.sendMessage({ password: pwd, username: uname}, function(response) {
+		if (response.type === "connectionACK") {
+			console.log("connection acknowledged by background");
+		}
 	});
 }
 
