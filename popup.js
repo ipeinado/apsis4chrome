@@ -38,11 +38,17 @@ $(document).ready(function() {
 // Receiving messages from Background
 chrome.runtime.onMessage.addListener(
 	function(req, sen, response) {
-		// the message comes from the connection handler
-		if (req.type === "connectionACK") {
-			if (req.statusText !== "OK") {
-				$('.formStatus').show().html(req.status + ": " + req.statusText);
+
+		if (req.type === "connectionStatus") {
+			if ((req.status == 200)) {
+				$("#help-text").hide();
+				$("#connection-status").show().css("color", "red").html(req.status + ": " + req.statusText);
+			} else {
+				console.log("In connection status");
+				$("#help-text").hide();
+				$("#connection-status").css("color", "orange").html("Connecting...");	
 			}
+			$("#username, #password").val("");
 		}
 		
 	}
@@ -59,15 +65,19 @@ function onKeyInFormSubmit(e) {
 	e.preventDefault();
 	var pwd = $("#password").val();
 	var uname = $("#username").val();
+
+	console.log("here then");
 		
 	if ((pwd === "") || (uname === "")) {
+		console.log("Fields are empty");
 		if (pwd === "") {
 			$('.password-form-group').addClass('has-error');
 		}
 		if (uname === "") {
 			$('.username-form-group').addClass('has-error');
 		}
-		$('.formStatus').show().html("Please complete all fields");
+		$("#help-text").hide();
+		$('#connection-status').show().html("Please complete all fields");
 		return; 
 	}
 
@@ -195,12 +205,14 @@ function onScreenreaderEnabledClick(e) {
 }
 
 function onBackgroundColourChange() {
+	console.log(this.value);
 	$("#background-colour-label, #foreground-colour-label").css("background", this.value);
 	localPreferences["backgroundColour"] = this.value.slice(1, 7);
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
 function onForegroundColourChange() {
+	console.log(this.value);
 	$("#background-colour-label, #foreground-colour-label").css("color", this.value);
 	localPreferences["foregroundColour"] = this.value.slice(1, 7);
 	chrome.storage.local.set({preferences: localPreferences});
@@ -248,4 +260,5 @@ function onSimplifierEnabledClick(e) {
 	} else {
 		localPreferences["simplifier"] = false;
 	}
+	chrome.storage.local.set({ preferences : localPreferences });
 }

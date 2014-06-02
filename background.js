@@ -16,24 +16,27 @@ chrome.runtime.onMessage.addListener(
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	var newPreferences = changes.preferences.newValue;
-	console.log(newPreferences);
+	setPreferences(newPreferences);
 });
 
 // Handle XMLHttpRequest
 function makeRequest(data) {
 
 	var xhr = new XMLHttpRequest();
-	var reqStatus = {type: "connectionACK"};
+	var reqStatus = {type: "connectionStatus"};
 
 	xhr.open( "POST", url, true);
 
 	xhr.setRequestHeader('Content-Type', 'application/json');
 
 	xhr.onreadystatechange = function() {
+
+		reqStatus.status = xhr.status;
+		
 		if (xhr.readyState == 4) {
 			if (xhr.status == 200) {
 				// the transaction has finished with a status of OK
-				reqStatus.status = xhr.status;
+				
 				var profile = JSON.parse(xhr.response);
 				console.log(profile);
 				if (profile.hasOwnProperty("isValid")) {
@@ -46,10 +49,17 @@ function makeRequest(data) {
 				}
 			// The transaction has ended with a status other than OK
 			} else {
-				reqStatus.status = xhr.status;
+
 				reqStatus.statusText = xhr.statusText;
+
 			}
-			chrome.runtime.sendMessage(reqStatus, function(response) {});
+
+			chrome.runtime.sendMessage(reqStatus);
+
+		} else {
+
+			chrome.runtime.sendMessage(reqStatus);
+
 		}
 	}
 
@@ -143,6 +153,11 @@ function savePreferences(userInfo) {
 	}); 
 }
 
+function setPreferences(preferences) {
+	console.log(preferences);
+}
+
+// General Use Variables
 var bcdToInt = {
 	"0000": 0,
 	"0001": 1,
