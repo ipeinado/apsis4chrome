@@ -32,7 +32,7 @@
 		<h1 id="preferences-div-welcome"></h1>
 		<form role="form" id="preferences-form">
 			<h2>Magnification</h2>
-			<div class="checkbox">
+			<div class="checkbox" title="Click here to activate magnification">
 				<label for="magnifier-enabled" id="magnifier-enabled-label">
 				<input type="checkbox" value="" id="magnifier-enabled" aria-labelled-by="magnifier-enabled-label" />
 					Enable magnification
@@ -80,54 +80,40 @@
 				</label>
 			</div>
 
+			<h2>Font size</h2>
 			<div class="form-group">
-				<h2>Font size</h2>
-				<div class="radio">
-					<label for="font-size-normal">
-						<input type="radio" name="font-size" id="font-size-normal" value="normal" />
-						Normal
-					</label>
-				</div>
-
-				<div class="radio">
-					<label for="font-size-large">
-						<input type="radio" name="font-size" id="font-size-large" value="large" />
-						Large
-					</label>
-				</div>
-
-				<div class="radio">
-					<label for="font-size-x-large">
-						<input type="radio" name="font-size" id="font-size-x-large" value="x-large" />
-						X-Large
-					</label>
-				</div>
-
-			<div>
-
-			<div class="form-group">
-				<h2>On Screen Keyboard</h2>
-				<div class="checkbox">
-					<label for="screen-keyboard-enabled">
-						<input type="checkbox" id="screen-keyboard-enabled" value="" />
-						Enable on-screen keyboard
-					</label>
-				</div>
+				<label for="font-size" id="font-size-label">
+					<input type="number" id="font-size" aria-labelled-by="font-size-label" min="10" max="24" step="1" value="" />
+					pt (points)
+				</label>
+			</div>
+			<div class="checkbox" title="Click here to leave the default text size in web pages">
+				<label for="font-size-disabled" id="font-size-disabled-label">
+					<input type="checkbox" id="font-size-disabled" aria-labelled-by="font-size-disabled-layer" />
+					Disable font sizing
+				</label>
 			</div>
 
-			<div class="form-group">
-				<h2>Simplifier</h2>
-				<div class="checkbox">
-					<label for="simplifier-enabled">
-						<input type="checkbox" id="simplifier-enabled" value="" />
-						Enable simplification
-					</label>
-				</div>
+			
+			<h2>On Screen Keyboard</h2>
+			<div class="checkbox">
+				<label for="screen-keyboard-enabled">
+					<input type="checkbox" id="screen-keyboard-enabled" value="" />
+					Enable on-screen keyboard
+				</label>
+			</div>
+
+			<h2>Simplifier</h2>
+			<div class="checkbox">
+				<label for="simplifier-enabled">
+					<input type="checkbox" id="simplifier-enabled" value="" />
+					Enable simplification
+				</label>
 			</div>
 
 		</form>
 		<button class="btn btn-danger" id="log-out-btn">Log out</button>
-		<a href="" id="save-to-c4a">Save to Cloud4all</a>
+		<a href="" id="save-to-c4a" class="btn btn-default">Save to Cloud4all</a>
 	</div>
   </body>
 </html>

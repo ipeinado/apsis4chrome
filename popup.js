@@ -15,6 +15,13 @@ $(document).ready(function() {
 		chrome.tabs.create({ url: 'https://cajerofacil.apsis4all.eu/initialservlet' }); 
 	});
 
+	$("#log-out-btn").click(function(e) {
+		e.preventDefault();
+		chrome.storage.local.clear();
+		localPreferences = {};
+		chrome.tabs.reload();
+	});
+
 	// Form buttons
 	$("#magnifier-enabled").click(onMagnifierEnabledClick);
 	$("#magnification-level").on("change", onMagnificationChange);
@@ -23,18 +30,11 @@ $(document).ready(function() {
 	$("#background-colour").change(onBackgroundColourChange);
 	$("#foreground-colour").change(onForegroundColourChange);
 	$("#monochrome-theme-enabled").click(onMonochromeEnabledClick);
-	$("#font-size-normal").click(onFontSizeNormalClick);
-	$("#font-size-large").click(onFontSizeLargeClick);
-	$("#font-size-x-large").click(onFontSizeXLargeClick);
+	$("#font-size").change(onFontSizeChange);
+	$("#font-size-disabled").click(onFontSizeDisabledClick);
 	$("#screen-keyboard-enabled").click(onScreenKeyboardEnabledClick);
 	$("#simplifier-enabled").click(onSimplifierEnabledClick);
 
-	$("#log-out-btn").click(function(e) {
-		e.preventDefault();
-		chrome.storage.local.clear();
-		localPreferences = {};
-		chrome.tabs.reload();
-	});
 }); 
 
 // Receiving messages from Background
@@ -105,7 +105,7 @@ function initializePopup(userInfo) {
 		$('#form-div').hide();
 		
 		if (localPreferences.hasOwnProperty("magnifierEnabled")) {
-			if (localPreferences["magnifierEnabled"]) {
+			if (localPreferences.magnifierEnabled) {
 				$("#magnifier-enabled").prop('checked', true);
 				$("#magnification-level").prop("disabled", false);	
 			} else {
@@ -115,7 +115,7 @@ function initializePopup(userInfo) {
 		}
 
 		if (localPreferences.hasOwnProperty("magnification")) {
-			$("#magnification-level").attr("value", localPreferences["magnification"]);
+			$("#magnification-level").attr("value", localPreferences.magnification);
 		}
 
 		if (localPreferences.hasOwnProperty("screenColour")) {
@@ -127,7 +127,7 @@ function initializePopup(userInfo) {
 		}
 
 		if (localPreferences.hasOwnProperty("screenReaderEnabled")) {
-			if (localPreferences["screenReaderEnabled"]) {
+			if (localPreferences.screenReaderEnabled) {
 				$("#screenreader-enabled").prop("checked", true);
 			} else {
 				$("#screenreader-enabled").prop("checked", false);
@@ -135,17 +135,17 @@ function initializePopup(userInfo) {
 		}
 
 		if (localPreferences.hasOwnProperty("backgroundColour")) {
-			$("#background-colour").attr("value", "#" + localPreferences["backgroundColour"]);
-			$("#background-colour-label, #foreground-colour-label").css("background", "#" + localPreferences["backgroundColour"]);
+			$("#background-colour").attr("value", "#" + localPreferences.backgroundColour);
+			$("#background-colour-label, #foreground-colour-label").css("background", "#" + localPreferences.backgroundColour);
 		}
 
 		if (localPreferences.hasOwnProperty("foregroundColour")) {
-			$("#foreground-colour").attr("value", "#" + localPreferences["foregroundColour"]);
-			$("#background-colour-label, #foreground-colour-label").css("color", "#" + localPreferences["foregroundColour"]);
+			$("#foreground-colour").attr("value", "#" + localPreferences.foregroundColour);
+			$("#background-colour-label, #foreground-colour-label").css("color", "#" + localPreferences.foregroundColour);
 		}
 
 		if (localPreferences.hasOwnProperty("theme")) {
-			var theme = localPreferences["theme"];
+			var theme = localPreferences.theme;
 			if (theme === "monochrome") {
 				$("#monochrome-theme-enabled").prop("checked", true);
 				$("#background-colour, #foreground-colour").prop("disabled", true);
@@ -157,33 +157,37 @@ function initializePopup(userInfo) {
 		}
 
 		if (localPreferences.hasOwnProperty("fontSize")) {
-			var fs = localPreferences["fontSize"];
-			if (fs === "normal") {
-				$("#font-size-normal").prop("checked", true);
-			} else if (fs === "large") {
-				$("#font-size-large").prop("checked", true);
-			} else if (fs === "x-large") {
-				$("#font-size-x-large").prop("checked", true);
+			$("#font-size").attr("value", localPreferences.fontSize);
+			// $("#font-size").value(localPreferences["fontSize"]);
+		} else {
+			$("#font-size-disabled").prop("checked", true);
+			$("#font-size").prop("disabled", true);
+		}
+
+		if (localPreferences.hasOwnProperty("fontSizeDisabled")) {
+			if (localPreferences.fontSizeDisabled) {
+				$("#font-size-disabled").prop("checked", true);
+				$("#font-size").prop("disabled", true);	
 			}
+			
 		}
 
 		if (localPreferences.hasOwnProperty("onScreenKeyboardEnabled")) {
-			if (localPreferences["onScreenKeyboardEnabled"]) {
+			if (localPreferences.onScreenKeyboardEnabled) {
 				$("#screen-keyboard-enabled").prop("checked", true);
 			} else {
 				$("#screen-keyboard-enabled").prop("checked", false);
 			}
 		}
 
-		if (localPreferences.hasOwnProperty["simplifier"]) {
-			if (localPreferences["simplifier"]) {
+		if (localPreferences.hasOwnProperty("simplifier")) {
+			if (localPreferences.simplifier) {
 				$("#simplifier-enabled").prop("checked", true);
 			} else {
 				$("#simplifier-enabled").prop("checked", false);
 			}
 		}
 	}
-
 }
 
 function onMagnifierEnabledClick(e) {
@@ -192,53 +196,51 @@ function onMagnifierEnabledClick(e) {
 		$("#magnification-level").prop("disabled", false);
 	} else {
 		$("#magnification-level").prop("disabled", true);
-		localPreferences['magnifierEnabled'] = false;
+		localPreferences.magnifierEnabled = false;
 	}
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
 function onMagnificationChange() {
 	console.log("Magnification has changed");
-	localPreferences["magnification"] = parseFloat($("#magnification-level").val());
+	localPreferences.magnification = parseFloat($("#magnification-level").val());
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
 function onScreenreaderEnabledClick(e) {
 	if (this.checked) {
-		localPreferences['screenReaderEnabled'] = true;
+		localPreferences.screenReaderEnabled = true;
 	} else {
-		localPreferences['screenReaderEnabled'] = false;
+		localPreferences.screenReaderEnabled = false;
 	}
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
 function onDefaultColoursClick(e) {
 	if (this.checked) {
-		localPreferences["screenColour"] = "default";
+		localPreferences.screenColour = "default";
 		chrome.tabs.reload();
 	} else {
-		delete localPreferences["screenColour"];
+		delete localPreferences.screenColour;
 	}
 	chrome.storage.local.set({ preferences : localPreferences }); 
 }
 
 function onBackgroundColourChange() {
-	console.log(this.value);
 	$("#background-colour-label, #foreground-colour-label").css("background", this.value);
-	localPreferences["backgroundColour"] = this.value.slice(1, 7);
+	localPreferences.backgroundColour = this.value.slice(1, 7);
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
 function onForegroundColourChange() {
-	console.log(this.value);
 	$("#background-colour-label, #foreground-colour-label").css("color", this.value);
-	localPreferences["foregroundColour"] = this.value.slice(1, 7);
+	localPreferences.foregroundColour = this.value.slice(1, 7);
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
 function onMonochromeEnabledClick(e) {
 	if (this.checked) {
-		localPreferences["theme"] = "monochrome";
+		localPreferences.theme = "monochrome";
 		$("#background-colour, #foreground-colour").prop("disabled", true);
 
 	} else {
@@ -248,35 +250,39 @@ function onMonochromeEnabledClick(e) {
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
-function onFontSizeNormalClick(e) {
-	localPreferences["fontSize"] = "normal";
+function onFontSizeChange() {
+	var fs = $("#font-size").val();
+	localPreferences.fontSize = parseInt(fs);
 	chrome.storage.local.set({preferences: localPreferences});
 }
 
-function onFontSizeLargeClick(e) {
-	localPreferences["fontSize"] = "large";
-	chrome.storage.local.set({preferences: localPreferences});
-}
-
-function onFontSizeXLargeClick(e) {
-	localPreferences["fontSize"] = "x-large";
-	chrome.storage.local.set({preferences: localPreferences});
+function onFontSizeDisabledClick(e) {
+	if (this.checked) {
+		$("#font-size").prop("disabled", true);
+		localPreferences.fontSizeDisabled = true;
+		chrome.tabs.reload();
+	} else {
+		$("#font-size").prop("disabled", false);
+		localPreferences.fontSizeDisabled = false;
+	}
+	
+	chrome.storage.local.set({ preferences : localPreferences });
 }
 
 function onScreenKeyboardEnabledClick(e) {
 	if (this.checked) {
-		localPreferences["onScreenKeyboardEnabled"] = true;
+		localPreferences.onScreenKeyboardEnabled = true;
 	} else {
-		localPreferences["onScreenKeyboardEnabled"] = true;
+		localPreferences.onScreenKeyboardEnabled = false;
 	}
 	chrome.storage.local.set({ preferences : localPreferences });
 }
 
 function onSimplifierEnabledClick(e) {
 	if (this.checked) {
-		localPreferences["simplifier"] = true;
+		localPreferences.simplifier = true;
 	} else {
-		localPreferences["simplifier"] = false;
+		localPreferences.simplifier = false;
 	}
 	chrome.storage.local.set({ preferences : localPreferences });
 }

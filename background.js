@@ -121,19 +121,16 @@ function savePreferences(userInfo) {
 	if (prefs.hasOwnProperty("ColourOfBackground") && prefs.hasOwnProperty("ColourOfText")) {
 		var bgColour = prefs["ColourOfBackground"]["Value"];
 		var fgColour = prefs["ColourOfText"]["Value"];
-
-		console.log("BACKGROUND COLOR: " + bgColour); 
-		console.log("FOREGROUND COLOR: " + fgColour);
 		
 		preferences.backgroundColour = bgColour;
 		preferences.foregroundColour = fgColour;
 
 		if ((bgColour == "FFD700") && (fgColour == "1E90FF")) {
-			preferences["screenColour"] = "default";
+			preferences.screenColour = "default";
 		}
 
 	} else {
-		preferences["screenColour"] = "default";		
+		preferences.screenColour = "default";		
 	}
 
 	if (prefs.hasOwnProperty("ColourAvoidance")) {
@@ -144,14 +141,8 @@ function savePreferences(userInfo) {
 
 	if (prefs.hasOwnProperty("CharacterSize")) {
 		var charsize = prefs["CharacterSize"]["Value"];
-		var charsizemm = parseInt(bcdToInt[charsize.slice(0, 4)])*10 + parseInt(bcdToInt[charsize.slice(4, 8)]);
-		if (charsizemm < 5) {
-			preferences.fontSize = "normal";
-		} else if ((charsizemm >= 5) && (charsizemm < 9)) {
-			preferences.fontSize = "large";
-		} else if (charsizemm >= 9) {
-			preferences.fontSize = "x-large";
-		}
+		var charsizept = Math.floor((parseInt(bcdToInt[charsize.slice(0, 4)])*10 + parseInt(bcdToInt[charsize.slice(4, 8)]))*mmToPt);
+		preferences.fontSize = charsizept;
 	}
 
 	if (prefs.hasOwnProperty("On_ScreenKeyboard")) {
@@ -182,7 +173,7 @@ function setPreferences(preferences) {
 
 	if (preferences != undefined) {
 		if (preferences.hasOwnProperty("magnifierEnabled")) {
-			if (preferences["magnifierEnabled"]) {
+			if (preferences.magnifierEnabled) {
 				if (preferences.hasOwnProperty("magnification")) {
 					chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('zoom', '" + preferences['magnification'].toString() + "')" });
 				}
@@ -194,12 +185,12 @@ function setPreferences(preferences) {
 		if (!preferences.hasOwnProperty("screenColour")) {
 
 			if (preferences.hasOwnProperty("backgroundColour")) {
-				var backgroundColour = preferences["backgroundColour"];
+				var backgroundColour = preferences.backgroundColour;
 				chrome.tabs.insertCSS({ code: "* { background: #" + backgroundColour + " !important; }" }); 
 			} 
 
 			if (preferences.hasOwnProperty("foregroundColour")) {
-				var foregroundColour = preferences["foregroundColour"];
+				var foregroundColour = preferences.foregroundColour;
 				chrome.tabs.insertCSS({ code : "* { color: #"+ foregroundColour + " !important; a { text-decoration: underline; } }" });
 			}
 		} 
@@ -210,6 +201,18 @@ function setPreferences(preferences) {
 			}
 		} else {
 			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('theme');" });
+		}
+
+		if (preferences.hasOwnProperty("fontSize")) {
+			if ((preferences.hasOwnProperty("fontSizeDisabled")) && (!preferences.fontSizeDisabled)) {
+				chrome.tabs.insertCSS({ code : "html, body, div, p, ul { font-size: " + preferences.fontSize + "pt !important; line-height: 1.4em !important; }" });	
+			}
+			
+		}
+
+		if (preferences.hasOwnProperty("cursorSize")) {
+			var extUrl = chrome.extension.getURL("images");
+			chrome.tabs.insertCSS({ code : "html { cursor: url(" +  extUrl +"/mouse_40.png), auto !important; }" });
 		}
 	}
 }
