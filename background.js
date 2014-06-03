@@ -1,3 +1,5 @@
+'use strict'
+
 var url = "http://193.27.9.220/Apsis4allBackend/rest/ProfileService",
 	mmToPt = 2.834645669; 	// milimeters to Points factor
 
@@ -17,22 +19,45 @@ chrome.runtime.onMessage.addListener(
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	var newPreferences = changes.preferences.newValue;
 
-	if (newPreferences != undefined) {
+	if (newPreferences) {
 		setPreferences(newPreferences);
 	} else {
-		chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');document.documentElement.removeAttribute('theme');" });
+		chrome.tabs.query({ currentWindow : true}, function(tabs) {
+			for (var i = 0; i < tabs.length; i++) {
+				chrome.tabs.reload(tabs[i].id);
+			}
+		});
 	}
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {
+	if (!chrome.runtime.lastError) {
+		setTab();	
+	} else {
+		console.log(chrome.runtime.lastError.message);
+	}
+	
+	// console.log("Activado");
+	// chrome.storage.local.get("preferences", function(results) {
+	// 	if (results.preferences != undefined) {
+	// 		setPreferences(results.preferences);	
+	// 	} else {
+	// 		chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');document.documentElement.removeAttribute('theme');" });		
+	// 	}
+	// });
+}); 
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+	setTab();
+});
+
+function setTab() {
 	chrome.storage.local.get("preferences", function(results) {
-		if (results.preferences != undefined) {
-			setPreferences(results.preferences);	
-		} else {
-			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');document.documentElement.removeAttribute('theme');" });		
+		if (results.preferences) {
+			setPreferences(results.preferences);
 		}
 	});
-}); 
+}
 
 // Handle XMLHttpRequest
 function makeRequest(data) {
@@ -59,22 +84,15 @@ function makeRequest(data) {
 						console.log("Profile is valid");
 						reqStatus.statusText = xhr.statusText;
 						savePreferences({username: data.username, prefsXML: profile.profile});
-
  					}
 				}
 			// The transaction has ended with a status other than OK
 			} else {
-
 				reqStatus.statusText = xhr.statusText;
-
 			}
-
 			chrome.runtime.sendMessage(reqStatus);
-
 		} else {
-
 			chrome.runtime.sendMessage(reqStatus);
-
 		}
 	}
 
@@ -82,8 +100,8 @@ function makeRequest(data) {
 }
 
 function savePreferences(userInfo) {
-	var prefs = $.xml2json(userInfo.prefsXML),
-	preferences = {};
+	var prefs = $.xml2json(userInfo.prefsXML);
+	var preferences = {};
 	console.log(prefs);
 
 	if (prefs.hasOwnProperty("ScreenEnhancement")) {
@@ -163,56 +181,87 @@ function savePreferences(userInfo) {
 
 	chrome.storage.local.set({ user: userInfo.username, preferences: preferences }, function() {
 		if (chrome.runtime.lastError) {
-			console.log("Error storing");
+			console.log("Error in chrome storage local set");
 		}
 	}); 
 }
 
 function setPreferences(preferences) {
-	console.log(preferences);
+	
+	if (preferences) {
+		
+		console.log(preferences);
 
-	if (preferences != undefined) {
 		if (preferences.hasOwnProperty("magnifierEnabled")) {
 			if (preferences.magnifierEnabled) {
 				if (preferences.hasOwnProperty("magnification")) {
-					chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('zoom', '" + preferences['magnification'].toString() + "')" });
+					chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('zoom', '" + preferences['magnification'].toString() + "')" }, function() {
+						if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+					});
 				}
 			} else {
-				chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');" });
+				chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');" }, function() {
+					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+				});
 			}
+		}
+
+		if (preferences.hasOwnProperty("screenReaderEnabled")) {
+			chrome.management.get("kgejglhpjiefppelpmljglcjbhoiplfn", function(extInfo) {
+				if (chrome.runtime.lastError) {
+					console.log(chrome.runtime.lastError.message)
+				} else {
+					chrome.management.setEnabled(extInfo.id, preferences.screenReaderEnabled); 	
+				}
+			});
 		}
 
 		if (!preferences.hasOwnProperty("screenColour")) {
 
 			if (preferences.hasOwnProperty("backgroundColour")) {
 				var backgroundColour = preferences.backgroundColour;
-				chrome.tabs.insertCSS({ code: "* { background: #" + backgroundColour + " !important; }" }); 
+				chrome.tabs.insertCSS({ code: "* { background: #" + backgroundColour + " !important; }" }, function() {
+					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+				}); 
 			} 
 
 			if (preferences.hasOwnProperty("foregroundColour")) {
 				var foregroundColour = preferences.foregroundColour;
-				chrome.tabs.insertCSS({ code : "* { color: #"+ foregroundColour + " !important; a { text-decoration: underline; } }" });
+				chrome.tabs.insertCSS({ code : "* { color: #"+ foregroundColour + " !important; a { text-decoration: underline; } }" }, function() {
+					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+				});
 			}
 		} 
 
 		if (preferences.hasOwnProperty("theme")) {
 			if (preferences["theme"] === "monochrome") {
-				chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('theme', 'monochrome');" });
+				chrome.tabs.executeScript({ code : "document.documentElement.setAttribute('theme', 'monochrome');" }, function() {
+					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+				});
 			}
 		} else {
-			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('theme');" });
+			chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('theme');" }, function() {
+				if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+			});
 		}
 
 		if (preferences.hasOwnProperty("fontSize")) {
-			if ((preferences.hasOwnProperty("fontSizeDisabled")) && (!preferences.fontSizeDisabled)) {
-				chrome.tabs.insertCSS({ code : "html, body, div, p, ul { font-size: " + preferences.fontSize + "pt !important; line-height: 1.4em !important; }" });	
+			if (!(preferences.hasOwnProperty("fontSizeDisabled"))) {
+				chrome.tabs.insertCSS({ code : "html, body, div, p, ul { font-size: " + preferences.fontSize + "pt !important; line-height: 1.4em !important; }" }, function() {
+					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+				});	
 			}
 			
 		}
 
-		if (preferences.hasOwnProperty("cursorSize")) {
-			var extUrl = chrome.extension.getURL("images");
-			chrome.tabs.insertCSS({ code : "html { cursor: url(" +  extUrl +"/mouse_40.png), auto !important; }" });
+		if (preferences.hasOwnProperty("onScreenKeyboardEnabled")) {
+			chrome.management.get("pflmllfnnabikmfkkaddkoolinlfninn", function(extInfo) {
+				if (chrome.runtime.lastError) {
+					console.log(chrome.runtime.lastError.message);
+				} else {
+					chrome.management.setEnabled(extInfo.id, preferences.onScreenKeyboardEnabled);
+				}
+			});
 		}
 	}
 }

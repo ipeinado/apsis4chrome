@@ -1,4 +1,21 @@
-var localPreferences = {};
+var localPreferences = {},
+	cvInstalled = false,
+	oskInstalled = false;
+
+(function() {
+	// Check if ChromeVox is installed
+	chrome.management.get("kgejglhpjiefppelpmljglcjbhoiplfn", function(extInf) {
+		console.log(chrome.runtime.lastError);
+		(chrome.runtime.lastError) ? cvInstalled = false : cvInstalled = true; 
+		console.log(cvInstalled);
+	});
+
+	// Check if Chrome Virtual Keyboard is installed
+	chrome.management.get("pflmllfnnabikmfkkaddkoolinlfninn", function(extInf) {
+		(chrome.runtime.lastError) ? oskInstalled = false : oskInstalled = true;
+		console.log(oskInstalled);
+	});
+})();
 
 $(document).ready(function() {
 
@@ -127,10 +144,19 @@ function initializePopup(userInfo) {
 		}
 
 		if (localPreferences.hasOwnProperty("screenReaderEnabled")) {
-			if (localPreferences.screenReaderEnabled) {
-				$("#screenreader-enabled").prop("checked", true);
+			if (cvInstalled) {
+				$("#screenreader-checkbox").show();
+				$("#screenreader-not-installed").hide();
+
+				if (localPreferences.screenReaderEnabled) {
+					$("#screenreader-enabled").prop("checked", true);
+				} else {
+					$("#screenreader-enabled").prop("checked", false);
+				}
+				
 			} else {
-				$("#screenreader-enabled").prop("checked", false);
+				$("#screenreader-checkbox").hide();
+				$("#screenreader-not-installed").show();
 			}
 		}
 
@@ -168,15 +194,28 @@ function initializePopup(userInfo) {
 			if (localPreferences.fontSizeDisabled) {
 				$("#font-size-disabled").prop("checked", true);
 				$("#font-size").prop("disabled", true);	
+			} else {
+				$("#font-size-disabled").prop("checked", false);
+				$("#font-size").prop("disabled", false);	
 			}
 			
 		}
 
 		if (localPreferences.hasOwnProperty("onScreenKeyboardEnabled")) {
-			if (localPreferences.onScreenKeyboardEnabled) {
-				$("#screen-keyboard-enabled").prop("checked", true);
+			if (oskInstalled) {
+				$("#screen-keyboard-checkbox").show();
+				$("#screen-keyboard-not-installed").hide();
+				console.log("OKSINSTALLED IS TRUE");
+
+				if (localPreferences.onScreenKeyboardEnabled) {
+					$("#screen-keyboard-enabled").prop("checked", true);
+				} else {
+					$("#screen-keyboard-enabled").prop("checked", false);
+				}
 			} else {
-				$("#screen-keyboard-enabled").prop("checked", false);
+				console.log("OKSINSTALLED IS NOT TRUE");
+				$("#screen-keyboard-checkbox").hide();
+				$("#screen-keyboard-not-installed").show();
 			}
 		}
 
@@ -263,7 +302,7 @@ function onFontSizeDisabledClick(e) {
 		chrome.tabs.reload();
 	} else {
 		$("#font-size").prop("disabled", false);
-		localPreferences.fontSizeDisabled = false;
+		delete localPreferences.fontSizeDisabled;
 	}
 	
 	chrome.storage.local.set({ preferences : localPreferences });
