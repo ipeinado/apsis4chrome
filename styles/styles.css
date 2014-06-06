@@ -22,3 +22,13 @@ html[theme = "monochrome"] {
 	-webkit-filter: grayscale(100%) contrast(140%);
 	filter: grayscale(100%);
 }
+
+div.simple-container {
+	font-family: Arial, Verdana, sans-serif !important;
+	width: 960px;
+	margin: 0 auto;
+}
+
+div.simple-container h1, div.simple-container h2 {
+	text-align: center;
+}

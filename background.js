@@ -247,7 +247,7 @@ function setPreferences(preferences) {
 
 		if (preferences.hasOwnProperty("fontSize")) {
 			if (!(preferences.hasOwnProperty("fontSizeDisabled"))) {
-				chrome.tabs.insertCSS({ code : "html, body, div, p, ul { font-size: " + preferences.fontSize + "pt !important; line-height: 1.4em !important; }" }, function() {
+				chrome.tabs.insertCSS({ code : "html, body, p, span, blockquote, button, ul, li > a { font-size: " + preferences.fontSize + "pt !important; line-height: 1.4em !important; }" }, function() {
 					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
 				});	
 			}
@@ -262,6 +262,14 @@ function setPreferences(preferences) {
 					chrome.management.setEnabled(extInfo.id, preferences.onScreenKeyboardEnabled);
 				}
 			});
+		}
+
+		if (preferences.hasOwnProperty("simplifier")) {
+			if (preferences.simplifier) {
+				chrome.tabs.executeScript({file: 'js/simplifier.js'}, function() {
+					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
+				});
+			}
 		}
 	}
 }
