@@ -27,8 +27,55 @@ div.simple-container {
 	font-family: Arial, Verdana, sans-serif !important;
 	width: 960px;
 	margin: 0 auto;
+	padding: 1em;
 }
 
-div.simple-container h1, div.simple-container h2 {
+div.simple-container h1 {
+	display: block;
+	clear: both;
+	margin: 1em 0;
+	font-size: 3em !important;
+	line-height: 1.2em;
 	text-align: center;
+}
+
+div.simple-container h2 {
+	display: block;
+	clear: both;
+	margin: 1em 0 0.6em 0;
+	font-size: 2em !important;
+	line-height: 1.2em;
+	text-align: left;
+}
+
+div.simple-container h3 {
+	display: block;
+	clear: both;
+	margin: 1em 0 0.6em 0;
+	font-size: 1.6em !important;
+	line-height: 1.2em;
+	text-align: left;
+}
+
+div.simple-container a {
+	text-decoration: underline !important;
+}
+
+div.simple-container img {
+	text-align: center;
+	display: block;
+	clear: both;
+	margin: 1em auto;
+}
+
+div.simple-container ul {
+	display: block;
+	clear: both;
+}
+
+div.simple-container a.expand-button {
+	display: inline-block;
+	float: left;
+	font-size: 0.8em;
+	margin-right: 1em;
 }
