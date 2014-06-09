@@ -1,18 +1,15 @@
 (function() {
 
-	var domUL = $("<ul class='dom-list'></ul>");
+	var divContainer = $("<div class='simple-container'></ul>");
+	var firstLevelUL = $("<ul class='first-level'></ul>")
 	
-	$(':header').each(function() {
-		if ($(this).prop("tagName") == "H1") {
-			$(domUL).append($(this))
+	$("body *").not("div, script, ul, li, input").each(function() {
+		if ($(this).text().length > 0) {
+			$(divContainer).append(this);	
 		}
-
-		if ($(this).prop("tagName") == "H2") {
-			$(domUL).append($(this))
-		}
-
+		
 	});
 
-	$("body").html(domUL);
+	$("body").html(divContainer);
 
 })();

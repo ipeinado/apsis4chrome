@@ -1,6 +1,8 @@
 'use strict'
 
 var url = "http://193.27.9.220/Apsis4allBackend/rest/ProfileService",
+	uri = "http://registry.gpii.org/common/",
+	c4aPreferencesServer = "http://preferences.gpii.net/user/",
 	mmToPt = 2.834645669; 	// milimeters to Points factor
 
 // Receive messages from popup
@@ -12,6 +14,10 @@ chrome.runtime.onMessage.addListener(
 			}
 			makeRequest(req);
 			sendResponse({ type: "connectionACK", status: "success"});
+		}
+
+		if ((req.hasOwnProperty("action")) && (req.action === "savetoC4a")) {
+			uploadPreferencesToCloud4all();
 		}
 	}
 );
@@ -36,15 +42,6 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 	} else {
 		console.log(chrome.runtime.lastError.message);
 	}
-	
-	// console.log("Activado");
-	// chrome.storage.local.get("preferences", function(results) {
-	// 	if (results.preferences != undefined) {
-	// 		setPreferences(results.preferences);	
-	// 	} else {
-	// 		chrome.tabs.executeScript({ code : "document.documentElement.removeAttribute('zoom');document.documentElement.removeAttribute('theme');" });		
-	// 	}
-	// });
 }); 
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
@@ -272,6 +269,59 @@ function setPreferences(preferences) {
 			}
 		}
 	}
+}
+
+function uploadPreferencesToCloud4all() {
+	
+	var xhr = new XMLHttpRequest();
+
+	xhr.onreadystatechange = function() {
+
+		if (xhr.readyState == 4) {
+			chrome.runtime.sendMessage({ action: "savetoC4a", status: xhr.status }, function(response) {
+				console.log(response);
+			});
+		}
+	};
+
+	chrome.storage.local.get({ user : "", preferences: {} }, function(results) {
+
+		var preferences = {};
+				
+
+		if (results.user != "") {
+
+			xhr.open("POST", c4aPreferencesServer + results.user); 
+			xhr.setRequestHeader("Content-Type", "application/json");
+
+			if (results.preferences.hasOwnProperty("magnifierEnabled")) {
+				preferences[uri + "magnifierEnabled"] = [{"value": results.preferences.magnifierEnabled}];
+			}
+			if (results.preferences.hasOwnProperty("magnification")) {
+				preferences[uri + "magnification"] = [{"value": results.preferences.magnification}];
+			}
+			if (results.preferences.hasOwnProperty("screenReaderEnabled")) {
+				preferences[uri + "screenReaderTTSEnabled"] = [{"value": results.preferences.screenReaderEnabled}];
+			}
+			if (results.preferences.hasOwnProperty("backgroundColour")) {
+				preferences[uri + "backgroundColour"] = [{"value": results.preferences.backgroundColour}];
+			}
+			if (results.preferences.hasOwnProperty("foregroundColour")) {
+				preferences[uri + "foregroundColour"] = [{"value": results.preferences.foregroundColour}];
+			}
+			if (results.preferences.hasOwnProperty("fontSize")) {
+				preferences[uri + "fontSize"] = [{"value": results.preferences.fontSize}];
+			}
+			if (results.preferences.hasOwnProperty("onScreenKeyboardEnabled")) {
+				preferences[uri + "onScreenKeyboardEnabled"] = [{"value": results.preferences.onScreenKeyboardEnabled}];
+			}
+			if (results.preferences.hasOwnProperty("simplifier")) {
+				preferences[uri + "simplifier"] = [{"value": results.preferences.simplifier}];
+			}
+
+			xhr.send(JSON.stringify({ preferences: preferences }));
+		}
+	});
 }
 
 // General Use Variables

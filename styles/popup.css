@@ -39,6 +39,10 @@ div#lower-buttons {
 	padding: 1em 0;
 }
 
+#preferences-saved-to-c4a {
+	display: none;
+}
+
 #save-to-c4a {
 	float: right;
 }

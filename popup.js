@@ -51,6 +51,7 @@ $(document).ready(function() {
 	$("#font-size-disabled").click(onFontSizeDisabledClick);
 	$("#screen-keyboard-enabled").click(onScreenKeyboardEnabledClick);
 	$("#simplifier-enabled").click(onSimplifierEnabledClick);
+	$("#save-to-c4a").click(onSaveToCloud4allClick);
 
 }); 
 
@@ -68,6 +69,15 @@ chrome.runtime.onMessage.addListener(
 				$("#connection-status").css("color", "orange").html("Connecting...");	
 			}
 			$("#username, #password").val("");
+		}
+
+		if ((req.hasOwnProperty("action")) && (req.action === "savetoC4a")) {
+			if (req.status == 200) {
+				$("#preferences-saved-to-c4a").html("<p class='text-success'>Preferences saved to Cloud4all</p>").show();	
+			} else {
+				$("#preferences-saved-to-c4a").html("<p class='text-danger'>Preferences not saved - ERROR " + req.status + "</p>").show();
+			}
+			
 		}
 		
 	}
@@ -324,4 +334,11 @@ function onSimplifierEnabledClick(e) {
 		localPreferences.simplifier = false;
 	}
 	chrome.storage.local.set({ preferences : localPreferences });
+}
+
+function onSaveToCloud4allClick(e) {
+	e.preventDefault();
+	chrome.runtime.sendMessage({ action : "savetoC4a"}, function(response) {
+		console.log(response);
+	});
 }
