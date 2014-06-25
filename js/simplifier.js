@@ -8,7 +8,7 @@
 			counter++;
 			$(this).addClass("collapsed-list").attr("id", "list_" + counter.toString());
 
-			var button = $("<a>[List]</a>").addClass("expand-button").attr("id", "list_" + counter.toString());
+			var button = $("<a title='click here to expand'>[List]</a>").addClass("expand-button").attr("id", "list_" + counter.toString());
 			$(divContainer).append(button);
 
 		}

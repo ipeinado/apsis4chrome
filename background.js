@@ -313,13 +313,15 @@ function uploadPreferencesToCloud4all() {
 				preferences[uri + "fontSize"] = [{"value": results.preferences.fontSize}];
 			}
 			if (results.preferences.hasOwnProperty("onScreenKeyboardEnabled")) {
-				preferences[uri + "onScreenKeyboardEnabled"] = [{"value": results.preferences.onScreenKeyboardEnabled}];
+				preferences[uri + "onscreenKeyboard"] = [{"value": results.preferences.onScreenKeyboardEnabled}];
 			}
 			if (results.preferences.hasOwnProperty("simplifier")) {
 				preferences[uri + "simplifier"] = [{"value": results.preferences.simplifier}];
 			}
 
-			xhr.send(JSON.stringify({ preferences: preferences }));
+			preferences[uri + "cursorSize"] = [{"value": 0.4}];
+
+			xhr.send(JSON.stringify(preferences));
 		}
 	});
 }
