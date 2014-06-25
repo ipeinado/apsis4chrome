@@ -309,17 +309,52 @@ function uploadPreferencesToCloud4all() {
 			if (results.preferences.hasOwnProperty("foregroundColour")) {
 				preferences[uri + "foregroundColour"] = [{"value": results.preferences.foregroundColour}];
 			}
+			if ((results.preferences.hasOwnProperty("backgroundColour")) && (results.preferences.hasOwnProperty("foregroundColour"))) {
+				console.log("has background and foreground colours");
+				if ((results.preferences.backgroundColour == "000000") && (results.preferences.foregroundColour == "ffffff")) {
+					console.log("black-white");
+					preferences[uri + "highContrastEnabled"] = [{"value": true}];
+					preferences[uri + "highContrastTheme"] = [{"value": "white-black"}];
+				}
+				if ((results.preferences.backgroundColour == "fffff") && (results.preferences.foregroundColour == "000000")) {
+					console.log("white-black");
+					preferences[uri + "highContrastEnabled"] = [{"value": true}];
+					preferences[uri + "highContrastTheme"] = [{"value": "black-white"}];
+				}
+				if ((results.preferences.backgroundColour == "ffff00") && (results.preferences.foregroundColour == "000000")) {
+					preferences[uri + "highContrastEnabled"] = [{"value": true}];
+					preferences[uri + "highContrastTheme"] = [{"value": "black-yellow"}];
+				}
+
+				if ((results.preferences.backgroundColour == "000000") && (results.preferences.foregroundColour == "ffff00")) {
+					preferences[uri + "highContrastEnabled"] = [{"value": true}];
+					preferences[uri + "highContrastTheme"] = [{"value": "yellow-black"}];
+				}
+			}
+
 			if (results.preferences.hasOwnProperty("fontSize")) {
 				preferences[uri + "fontSize"] = [{"value": results.preferences.fontSize}];
 			}
+
 			if (results.preferences.hasOwnProperty("onScreenKeyboardEnabled")) {
 				preferences[uri + "onscreenKeyboard"] = [{"value": results.preferences.onScreenKeyboardEnabled}];
 			}
+
 			if (results.preferences.hasOwnProperty("simplifier")) {
 				preferences[uri + "simplifier"] = [{"value": results.preferences.simplifier}];
 			}
 
+			if (results.preferences.hasOwnProperty("highContrastEnabled")) {
+				preferences[uri + "highContrastEnabled"] = [{"value": results.preferences.highContrastEnabled}];
+			}
+
+			if (results.preferences.hasOwnProperty("highContrastTheme")) {
+				preferences[uri + "highContrastTheme"] = [{"value": results.preferences.highContrastTheme}];
+			}
+
 			preferences[uri + "cursorSize"] = [{"value": 0.4}];
+
+			console.log(preferences);
 
 			xhr.send(JSON.stringify(preferences));
 		}

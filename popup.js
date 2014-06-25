@@ -64,10 +64,10 @@ chrome.runtime.onMessage.addListener(
 				$("#help-text").hide();
 				$("#connection-status").show().css("color", "red").html(req.status + ": " + req.statusText);
 			} else {
-				console.log("In connection status");
 				$("#help-text").hide();
-				$("#connection-status").css("color", "orange").html("Connecting...");	
+				$("#connection-status").show().css("color", "orange").html(req.status + ": " + req.statusText);
 			}
+			
 			$("#username, #password").val("");
 		}
 
@@ -272,6 +272,7 @@ function onDefaultColoursClick(e) {
 	} else {
 		delete localPreferences.screenColour;
 	}
+	localPreferences.highContrastEnabled = true;
 	chrome.storage.local.set({ preferences : localPreferences }); 
 }
 
