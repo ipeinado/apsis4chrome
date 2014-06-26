@@ -28,11 +28,24 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 	if (newPreferences) {
 		setPreferences(newPreferences);
 	} else {
-		chrome.tabs.query({ currentWindow : true}, function(tabs) {
-			for (var i = 0; i < tabs.length; i++) {
-				chrome.tabs.reload(tabs[i].id);
+		
+		chrome.management.get("kgejglhpjiefppelpmljglcjbhoiplfn", function(extInfo) {
+			if (chrome.runtime.lastError) {
+					console.log(chrome.runtime.lastError.message)
+				} else {
+					chrome.management.setEnabled(extInfo.id, false); 	
+			}
+		});	
+
+		chrome.management.get("pflmllfnnabikmfkkaddkoolinlfninn", function(extInfo) {
+			if (chrome.runtime.lastError) {
+				console.log(chrome.runtime.lastError.message);
+			} else {
+				chrome.management.setEnabled(extInfo.id, false);
 			}
 		});
+
+		chrome.tabs.reload();
 	}
 });
 
@@ -142,10 +155,11 @@ function savePreferences(userInfo) {
 
 		if ((bgColour == "FFD700") && (fgColour == "1E90FF")) {
 			preferences.screenColour = "default";
-		}
+		} 
 
 	} else {
-		preferences.screenColour = "default";		
+		preferences.backgroundColour = "000000";			
+		preferences.foregroundColour = "ffffff";
 	}
 
 	if (prefs.hasOwnProperty("ColourAvoidance")) {
@@ -157,7 +171,11 @@ function savePreferences(userInfo) {
 	if (prefs.hasOwnProperty("CharacterSize")) {
 		var charsize = prefs["CharacterSize"]["Value"];
 		var charsizept = Math.floor((parseInt(bcdToInt[charsize.slice(0, 4)])*10 + parseInt(bcdToInt[charsize.slice(4, 8)]))*mmToPt);
-		preferences.fontSize = charsizept;
+		if (charsizept > 24) {
+			preferences.fontSize = 24;
+		} else {
+			preferences.fontSize = charsizept;
+		}
 	}
 
 	if (prefs.hasOwnProperty("On_ScreenKeyboard")) {
@@ -201,16 +219,6 @@ function setPreferences(preferences) {
 					if (chrome.runtime.lastError) { console.log(chrome.runtime.lastError.message); }
 				});
 			}
-		}
-
-		if (preferences.hasOwnProperty("screenReaderEnabled")) {
-			chrome.management.get("kgejglhpjiefppelpmljglcjbhoiplfn", function(extInfo) {
-				if (chrome.runtime.lastError) {
-					console.log(chrome.runtime.lastError.message)
-				} else {
-					chrome.management.setEnabled(extInfo.id, preferences.screenReaderEnabled); 	
-				}
-			});
 		}
 
 		if (!preferences.hasOwnProperty("screenColour")) {
@@ -260,6 +268,20 @@ function setPreferences(preferences) {
 				}
 			});
 		}
+
+		if (preferences.hasOwnProperty("screenReaderEnabled")) {
+			if (preferences.screenReaderEnabled) {
+				chrome.management.get("kgejglhpjiefppelpmljglcjbhoiplfn", function(extInfo) {
+					if (chrome.runtime.lastError) {
+						console.log(chrome.runtime.lastError.message)
+					} else {
+						chrome.management.setEnabled(extInfo.id, preferences.screenReaderEnabled); 	
+					}
+				});	
+			}
+			
+		}
+
 
 		if (preferences.hasOwnProperty("simplifier")) {
 			if (preferences.simplifier) {
